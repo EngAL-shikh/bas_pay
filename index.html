@@ -3,449 +3,756 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل ربط بوابة الدفع BAS</title>
+    <title>دليل ربط بوابة الدفع BAS - Flutter + Laravel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: The SPA is designed as a single-page, scrollable guide to mirror the procedural nature of the source document. It starts with a high-level interactive flowchart (using Chart.js) for a quick overview. Key sections include a clear prerequisites checklist and a tabbed interface for the detailed backend, frontend, and confirmation steps. This structure was chosen to guide the developer user logically from a broad understanding to specific implementation details, enhancing usability and comprehension over a static text document. Details from the PDF are added into collapsible accordions within each step to provide depth without overwhelming the user initially. -->
-    <!-- Visualization & Content Choices: 1. Process Overview -> Goal: Organize/Inform -> Viz: Interactive Horizontal Bar Chart (Flowchart) -> Interaction: Clicking a step on the chart scrolls to the detailed text -> Justification: Provides an immediate, high-level visual map of the entire process. -> Library: Chart.js (Canvas). 2. Detailed Steps -> Goal: Inform -> Presentation: Tabbed Interface with collapsible accordions for API details -> Interaction: Clicking tabs reveals steps; clicking accordion headers reveals technical details (endpoints, JSON payloads). -> Justification: Organizes instructions into logical chunks (Backend, Frontend, Confirmation) and hides complex technical data by default, allowing developers to drill down when needed. -> Method: HTML/CSS/JS. 3. Prerequisites -> Goal: Inform -> Presentation: Styled Checklist. -> Method: HTML/Tailwind CSS. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #FDFBF8;
-            color: #4A4A4A;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 450px;
-            max-height: 60vh;
-        }
-        .tab-button.active {
-            border-color: #8D7B68;
-            background-color: #EFEBE5;
-            color: #4A4A4A;
-            font-weight: 700;
-        }
-        .tab-button {
-             border-color: #DCD6CC;
-        }
-        code, pre {
-            direction: ltr;
-            text-align: left;
-            font-family: 'Courier New', Courier, monospace;
-        }
-        .code-block {
-            background-color: #2d3748;
-            color: #e2e8f0;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            overflow-x: auto;
-            direction: ltr;
-            text-align: left;
-        }
-        .accordion-header {
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .accordion-header:hover {
-            background-color: #f9f7f5;
-        }
-        .accordion-content {
-            transition: max-height 0.3s ease-out;
-            overflow: hidden;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="antialiased">
-
-    <div class="container mx-auto max-w-5xl px-4 py-8 sm:py-12">
-
+    <div class="container mx-auto max-w-6xl px-4 py-8">
+        <!-- Header -->
         <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-[#6B5B4B]">دليل ربط بوابة الدفع BAS</h1>
-            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">هذا الدليل التفاعلي يوضح لك بالتفصيل كيفية ربط بوابة الدفع BAS مع تطبيق فلاتر والباك اند الخاص بك خطوة بخطوة.</p>
+            <h1 class="text-5xl font-bold text-white mb-4">دليل ربط بوابة الدفع BAS</h1>
+            <p class="text-xl text-white/90 max-w-3xl mx-auto">
+                دليل شامل وتفاعلي لربط بوابة الدفع BAS مع تطبيقات Flutter و Laravel
+            </p>
+            <div class="mt-6">
+                <div class="progress-bar max-w-md mx-auto">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <p class="text-white/80 mt-2" id="progressText">ابدأ بالخطوة الأولى</p>
+            </div>
         </header>
 
-        <main>
-            <section id="overview" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-2 text-[#8D7B68]">نظرة عامة على تدفق العملية</h2>
-                <p class="text-center mb-8 text-gray-600">هذا المخطط يوضح تسلسل الخطوات بين الأطراف المختلفة. اضغط على أي خطوة في المخطط للانتقال إلى شرحها التفصيلي.</p>
-                <div class="chart-container bg-white p-4 rounded-lg shadow-md">
-                    <canvas id="integrationFlowchart"></canvas>
-                </div>
-            </section>
-
-            <section id="prerequisites" class="mb-16 bg-white p-8 rounded-lg shadow-md">
-                <h2 class="text-3xl font-bold text-center mb-8 text-[#8D7B68]">المتطلبات الأساسية</h2>
-                 <p class="text-center mb-8 text-gray-600 -mt-4">قبل البدء في عملية الربط، من المهم التأكد من توفر جميع المتطلبات اللازمة لضمان تجربة تكامل سلسة وناجحة.</p>
-                <ul class="space-y-4 max-w-2xl mx-auto">
-                    <li class="flex items-start">
-                        <span class="text-xl text-[#A4907C] ml-4 mt-1">✔</span>
-                        <div>
-                            <h3 class="font-bold text-lg">حساب تاجر مع BAS</h3>
-                            <p class="text-gray-600">يجب أن يكون لديك `client_id` و `client_secret` التي تم تزويدك بها من قبل بوابة الدفع BAS.</p>
-                        </div>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-xl text-[#A4907C] ml-4 mt-1">✔</span>
-                        <div>
-                            <h3 class="font-bold text-lg">تثبيت حزمة Laravel SDK</h3>
-                            <p class="text-gray-600">تأكد من تثبيت الحزمة `basgate/laravel-sdk` في مشروع لارافيل الخاص بك.</p>
-                        </div>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-xl text-[#A4907C] ml-4 mt-1">✔</span>
-                        <div>
-                            <h3 class="font-bold text-lg">تثبيت حزمة Flutter SDK</h3>
-                            <p class="text-gray-600">تأكد من إضافة حزمة `bas_pay_flutter` أو `bas_flutter_sdk` إلى مشروع فلاتر الخاص بك.</p>
-                        </div>
-                    </li>
-                </ul>
-            </section>
-
-            <section id="steps" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-2 text-[#8D7B68]">خطوات الربط بالتفصيل</h2>
-                <p class="text-center mb-8 text-gray-600">تنقسم عملية الربط إلى ثلاث مراحل رئيسية: إعداد المعاملة في الباك اند، عرض واجهة الدفع في التطبيق، وأخيراً تأكيد حالة الدفع بشكل آمن.</p>
-                
-                <div class="max-w-4xl mx-auto">
-                    <div class="flex justify-center border-b border-gray-300 mb-6">
-                        <button data-tab="backend" class="tab-button active text-lg py-3 px-6 border-b-2 transition-colors duration-300">أولاً: جهة الباك اند</button>
-                        <button data-tab="frontend" class="tab-button text-lg py-3 px-6 border-b-2 transition-colors duration-300">ثانياً: جهة التطبيق</button>
-                        <button data-tab="confirmation" class="tab-button text-lg py-3 px-6 border-b-2 transition-colors duration-300">ثالثاً: تأكيد الدفع</button>
+        <!-- Steps Container -->
+        <div id="stepsContainer">
+            <!-- Step 1: Prerequisites -->
+            <div class="step-card rounded-xl p-8 mb-8 fade-in" id="step1">
+                <div class="flex items-center mb-6">
+                    <div class="step-number step-active" id="step1Number">1</div>
+                    <div class="mr-4">
+                        <h2 class="text-2xl font-bold text-gray-800">المتطلبات الأساسية</h2>
+                        <p class="text-gray-600">إعداد البيئة والأدوات المطلوبة</p>
                     </div>
-
-                    <div id="backend" class="tab-content bg-white p-6 md:p-8 rounded-lg shadow-md">
-                        <h3 class="text-2xl font-bold mb-4">الخطوة 1: إنشاء طلب الدفع (Initiate Transaction)</h3>
-                        <p class="mb-6">مهمة الباك اند هي تحضير عملية الدفع بشكل آمن. يقوم الباك اند بالتواصل مع BAS لإنشاء معاملة والحصول على رمز فريد ومؤقت (`trxToken`) ضروري لإتمام العملية في التطبيق.</p>
-                        <ol class="list-decimal list-inside space-y-3 text-gray-700 mb-6">
-                            <li>عندما يضغط المستخدم على زر "الدفع" في تطبيق فلاتر، يرسل التطبيق تفاصيل الطلب (المبلغ، معرف الطلب) إلى الباك اند الخاص بك.</li>
-                            <li>يقوم الباك اند بالتواصل مع BAS لإنشاء معاملة جديدة عبر استدعاء `sdk-initiate-transaction` API.</li>
-                            <li>في هذا الطلب، يتم إرسال بيانات الطلب مثل `amount`, `orderId`, و `customerInfo`.</li>
-                            <li>إذا نجح الطلب، ترد BAS بكائن يحتوي على `trxToken`. هذا الرمز صالح لمدة 15 دقيقة.</li>
-                            <li>يقوم الباك اند بحفظ `trxToken` مع تفاصيل الطلب في قاعدة البيانات، ثم يرسل هذا الرمز **فقط** إلى تطبيق فلاتر.</li>
-                        </ol>
-                        
-                        <div class="accordion border rounded-lg">
-                            <div class="accordion-header p-4 flex justify-between items-center">
-                                <h4 class="font-bold text-lg">تفاصيل API: sdk-initiate-transaction</h4>
-                                <span class="text-xl transform transition-transform duration-300">+</span>
-                            </div>
-                            <div class="accordion-content max-h-0 px-4 pb-0">
-                                <p class="font-semibold mt-2">POST: <code>{{baseUrl}}/api/v1/merchant/sdk-payment/initiate-transaction</code></p>
-                                <h5 class="font-bold mt-4 mb-2">Request Body:</h5>
-                                <div class="code-block">
-<pre><code>
-{
-  "head": {
-    "signature": "D8DPA/BCJEPASdWcBUQjiQs...",
-    "requestTimestamp": 1726355943223
-  },
-  "body": {
-    "amount": {
-      "value": 200,
-      "currency": "YER"
-    },
-    "customerInfo": {
-      "id": "69055"
-    },
-    "ordertype": "PayBill",
-    "orderId": "{{order_id}}",
-    "requestTimestamp": 1726355943223,
-    "appId": "ac90ddd1-6627-4ae9-b268-98c17bd8ee6c"
-  }
-}
-</code></pre>
-                                </div>
-                                <h5 class="font-bold mt-4 mb-2">Successful Response Body:</h5>
-                                <div class="code-block">
-<pre><code>
-{
-  "status": 1,
-  "code": "1111",
-  "messages": ["Success"],
-  "head": { ... },
-  "body": {
-    "appId": "ac90ddd1-6627-4ae9-b268-98c17bd8ee6c",
-    "trxStatus": "received",
-    "trxId": "03a5fcf5-95a5-4c80-b226-c834fa651662",
-    "trxToken": "30+4uC003UgkYWM5MGRkZDEt...YTFh",
-    "authenticated": true,
-    ...
-  }
-}
-</code></pre>
-                                </div>
-                            </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-800">📋 قائمة التحقق</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-3" id="check1">
+                                <span>حساب تاجر مع BAS (Client ID & Secret)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-3" id="check2">
+                                <span>مشروع Laravel جاهز</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-3" id="check3">
+                                <span>مشروع Flutter جاهز</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-3" id="check4">
+                                <span>Composer مثبت</span>
+                            </label>
                         </div>
                     </div>
                     
-                    <div id="frontend" class="tab-content hidden bg-white p-6 md:p-8 rounded-lg shadow-md">
-                        <h3 class="text-2xl font-bold mb-4">الخطوة 2: استدعاء واجهة الدفع (Call BAS Payment SDK)</h3>
-                        <p class="mb-6">بعد الحصول على رمز المعاملة من الباك اند، يأتي دور تطبيق فلاتر في استخدام هذا الرمز لعرض واجهة الدفع الآمنة للمستخدم. هذه الواجهة مُدارة بالكامل بواسطة BAS SDK.</p>
-                        <ol class="list-decimal list-inside space-y-3 mb-6 text-gray-700">
-                           <li>بمجرد استلام `trxToken` من الباك اند، يقوم التطبيق باستدعاء دالة `callBasPaymentSdk`.</li>
-                           <li>وفقًا للتوثيق، تقوم هذه الدالة بدورها باستدعاء `sdk-pre-initialize-pay` API لجلب طرق الدفع المتاحة وعرضها للمستخدم.</li>
-                           <li>عندما يختار المستخدم طريقة الدفع ويكمل العملية (مثل إدخال OTP)، تقوم SDK باستدعاء `sdk-initiate-payment` و `sdk-confirm-payment` في الخلفية.</li>
-                           <li>أخيرًا، تقوم SDK بإغلاق واجهتها وإرجاع النتيجة (نجاح أو فشل) إلى تطبيق فلاتر عبر دوال الـ Callback.</li>
-                        </ol>
-                        
-                        <div class="code-block">
-<pre><code>
-// استدعاء الدالة الرئيسية في فلاتر
-callBasPaymentSdk(
-  context: context,
-  trxToken: theTrxTokenReceivedFromBackend,
-  userPhone: "777777777",
-  fullName: "Ali Ahmed",
-  onSuccess: (TrxModel result) {
-    print("Payment Successful: ${result.trxId}");
-  },
-  onError: (Map&lt;String, dynamic&gt;? error) {
-    print("Payment Failed: ${error.toString()}");
-  },
-);
-</code></pre>
-                        </div>
-
-                         <div class="accordion border rounded-lg mt-6">
-                            <div class="accordion-header p-4 flex justify-between items-center">
-                                <h4 class="font-bold text-lg">تفاصيل API (خلف الكواليس)</h4>
-                                <span class="text-xl transform transition-transform duration-300">+</span>
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-800">🔑 بيانات BAS</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">App ID</label>
+                                <input type="text" class="w-full p-2 border rounded" id="appId" 
+                                       value="5d451b00-4f9d-4b52-8cc6-913793cca777" readonly>
                             </div>
-                            <div class="accordion-content max-h-0 px-4 pb-0">
-                                <h5 class="font-bold mt-2 mb-2">1. sdk-pre-initialize-pay</h5>
-                                <p class="mb-2 text-sm text-gray-600">لجلب طرق الدفع المتاحة.</p>
-                                <div class="code-block">
-<pre><code>
-// Request Body
-{
-  "trxToken": "{{trx_token}}"
-}
-</code></pre>
-                                </div>
-                                <h5 class="font-bold mt-4 mb-2">2. sdk-initiate-payment</h5>
-                                <p class="mb-2 text-sm text-gray-600">لبدء عملية الدفع بعد اختيار المستخدم لطريقة الدفع.</p>
-                                <div class="code-block">
-<pre><code>
-// Request Body
-{
-  "customerPaymentMethodId": 100000006,
-  "trxToken":"{{trx_token}}",
-  "account": "776111582",
-  "phoneNumber": "776111582",
-  "fullName": "YouYou Ahmed",
-  "extraFields": {
-    "account": "776111582"
-  }
-}
-</code></pre>
-                                </div>
-                                 <h5 class="font-bold mt-4 mb-2">3. sdk-confirm-payment</h5>
-                                 <p class="mb-2 text-sm text-gray-600">لتأكيد الدفع بعد إدخال المستخدم للمعلومات المطلوبة (مثل OTP).</p>
-                                <div class="code-block">
-<pre><code>
-// Request Body
-{
-  "customerPaymentMethodId": 100000006,
-  "appId": "cc3bba90-90c8-4ddb-9dce-07ca75e67994",
-  "trxToken": "{{trx_token}}",
-  "account": "776111582",
-  "pgTransactionToken": "trxToken",
-  "extraFields": {
-    "account": "776111582",
-    "OTP": "123456"
-  }
-}
-</code></pre>
-                                </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Merchant Key</label>
+                                <input type="text" class="w-full p-2 border rounded" id="merchantKey" 
+                                       value="I2lGQGFFNWQ3MHpkMTdfg==" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Client ID</label>
+                                <input type="text" class="w-full p-2 border rounded" id="clientId" 
+                                       value="e4051feb-cfce-4af5-a863-4027bdf7eeb5" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Client Secret</label>
+                                <input type="text" class="w-full p-2 border rounded" id="clientSecret" 
+                                       value="15c9a6b0-a3b9-4513-b925-6084f52e2138" readonly>
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button onclick="completeStep(1)" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        ✅ أكمل الخطوة الأولى
+                    </button>
+                </div>
+            </div>
 
-                    <div id="confirmation" class="tab-content hidden bg-white p-6 md:p-8 rounded-lg shadow-md">
-                        <h3 class="text-2xl font-bold mb-4">الخطوة 4: التحقق من حالة المعاملة (Check Transaction Status)</h3>
-                        <p class="mb-6">هذه الخطوة ضرورية لضمان أمان وموثوقية العملية. يجب على الباك اند التحقق مباشرة من BAS لضمان أن المعاملة قد تمت بنجاح بالفعل.</p>
-                        <ol class="list-decimal list-inside space-y-3 text-gray-700 mb-6">
-                            <li>بعد استدعاء دالة `onSuccess` في التطبيق، يجب على التطبيق إرسال طلب آخر للباك اند ليخبره أن المستخدم أكمل الدفع من جهته.</li>
-                            <li><strong>نقطة هامة:</strong> يقوم الباك اند بخطوة تحقق أخيرة ومباشرة مع BAS.</li>
-                            <li>يستدعي الباك اند `check-transaction-status` API من BAS، ويرسل `trxId` أو `orderId`.</li>
-                            <li>ترد BAS بالحالة النهائية والمؤكدة للمعاملة (`processed`, `failed`, etc.).</li>
-                            <li>بناءً على هذا الرد، يقوم الباك اند بتحديث حالة الطلب في قاعدة البيانات (مثلاً، "مدفوع").</li>
-                        </ol>
-                         <div class="accordion border rounded-lg">
-                            <div class="accordion-header p-4 flex justify-between items-center">
-                                <h4 class="font-bold text-lg">تفاصيل API: check-transaction-status</h4>
-                                <span class="text-xl transform transition-transform duration-300">+</span>
+            <!-- Step 2: Laravel Backend Setup -->
+            <div class="step-card rounded-xl p-8 mb-8 hidden" id="step2">
+                <div class="flex items-center mb-6">
+                    <div class="step-number" id="step2Number">2</div>
+                    <div class="mr-4">
+                        <h2 class="text-2xl font-bold text-gray-800">إعداد Laravel Backend</h2>
+                        <p class="text-gray-600">تثبيت SDK وإنشاء Controllers</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Install SDK -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">📦 تثبيت BAS Laravel SDK</h3>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('installSdk')">نسخ</button>
+                            <pre><code id="installSdk">composer require basgate/laravel-sdk</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Config File -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">⚙️ إنشاء ملف التكوين</h3>
+                        <p class="text-gray-600 mb-3">أنشئ ملف <code>config/bas.php</code>:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('configFile')">نسخ</button>
+                            <pre><code id="configFile">&lt;?php
+
+return [
+    'base_url' => env('BAS_BASE_URL', 'https://api-tst.basgate.com'),
+    'client_id' => env('BAS_CLIENT_ID', 'e4051feb-cfce-4af5-a863-4027bdf7eeb5'),
+    'client_secret' => env('BAS_CLIENT_SECRET', '15c9a6b0-a3b9-4513-b925-6084f52e2138'),
+    'app_id' => env('BAS_APP_ID', '5d451b00-4f9d-4b52-8cc6-913793cca777'),
+    'merchant_key' => env('BAS_MERCHANT_KEY', 'I2lGQGFFNWQ3MHpkMTdfg=='),
+    'iv' => env('BAS_IV', '@@@@&&&&####$$$$'),
+    'callback_uri' => env('BAS_CALLBACK_URI', 'http://localhost:8000/callback'),
+    
+    'token_endpoint' => env('BAS_TOKEN_ENDPOINT', '/api/v1/auth/token'),
+    'user_info_endpoint' => env('BAS_USER_INFO_ENDPOINT', '/api/v1/auth/secure/userinfo'),
+    'refund_payment_endpoint' => env('BAS_REFUND_PAYMENT_ENDPOINT', '/api/v1/merchant/refund-payment/request'),
+    'transaction_status_endpoint' => env('BAS_TRANSACTION_STATUS_ENDPOINT', '/api/v1/merchant/secure/transaction/status'),
+    'transaction_initiate_endpoint' => env('BAS_TRANSACTION_INITIATE_ENDPOINT', '/api/v1/merchant/secure/transaction/initiate'),
+    'notifications_endpoint' => env('BAS_NOTIFICATIONS_ENDPOINT', '/api/v1/merchant/secure/notifications/send-to-customer'),
+    
+    'verify_ssl' => env('BAS_VERIFY_SSL', false),
+    'timeout' => env('BAS_TIMEOUT', 30),
+];</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Service Provider -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🔧 تسجيل Service Provider</h3>
+                        <p class="text-gray-600 mb-3">أضف في <code>bootstrap/providers.php</code>:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('serviceProvider')">نسخ</button>
+                            <pre><code id="serviceProvider">&lt;?php
+
+return [
+    App\Providers\AppServiceProvider::class,
+    Bas\LaravelSdk\BasServiceProvider::class, // أضف هذا السطر
+];</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- API Tester -->
+                    <div class="api-tester">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🧪 اختبار API</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Base URL</label>
+                                <input type="text" class="w-full p-2 border rounded" id="apiBaseUrl" 
+                                       value="http://localhost:8000">
                             </div>
-                            <div class="accordion-content max-h-0 px-4 pb-0">
-                                <p class="font-semibold mt-2">POST: <code>{{baseUrl}}/api/v1/merchant/secure/transaction/status</code></p>
-                                <h5 class="font-bold mt-4 mb-2">Request Body:</h5>
-                                <div class="code-block">
-<pre><code>
-{
-  "head": {
-    "signature": "D8DPABCJePASdWcBUQjiQs...",
-    "requestTimestamp": "1726355943223"
-  },
-  "body": {
-    "appId": "ac90ddd1-6627-4ae9-b268-98c17bd8ee6c",
-    "orderId": "1425164d-e932-41fc-9bd5-5fb83ef73c45",
-    "trxId": "ab9cbca6-219d-43bc-ae0f-689b21da46d7",
-    "requestTimestamp": "1726355943223"
-  }
-}
-</code></pre>
-                                </div>
-                                <h5 class="font-bold mt-4 mb-2">Successful Response Body:</h5>
-                                <div class="code-block">
-<pre><code>
-{
-  "head": { ... },
-  "body": {
-    "trxStatus": "processed",
-    "trxId": "ab9cbca6-219d-43bc-ae0f-689b21da46d7",
-    "trxToken": "yHE4Q+nY3IjR3ZCsJ2bpS...",
-    "trxStatusId": 1202,
-    ...
-    "order": { ... }
-  }
-}
-</code></pre>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Auth Token</label>
+                                <input type="text" class="w-full p-2 border rounded" id="authToken" 
+                                       placeholder="Bearer token...">
+                            </div>
+                        </div>
+                        <button onclick="testInitiateAPI()" class="mt-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                            🚀 اختبار Initiate Payment
+                        </button>
+                        <div class="response-area mt-3" id="apiResponse">النتيجة ستظهر هنا...</div>
+                    </div>
+
+                    <!-- Examples Notice -->
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="mr-3">
+                                <h3 class="text-sm font-medium text-green-800">📁 ملفات Laravel الجاهزة</h3>
+                                <div class="mt-2 text-sm text-green-700">
+                                    <p>يوجد في مجلد <code>examples/</code> ملفات Laravel جاهزة:</p>
+                                    <ul class="list-disc list-inside mt-2 space-y-1">
+                                        <li><code>laravel_controller.php</code> - Controller كامل مع logging</li>
+                                        <li><code>migration.php</code> - جدول قاعدة البيانات</li>
+                                        <li><code>payment_model.php</code> - Model متقدم</li>
+                                        <li><code>laravel_routes.php</code> - Routes كاملة</li>
+                                    </ul>
+                                    <p class="mt-2 font-medium">انسخ هذه الملفات واستخدمها مباشرة!</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
+                
+                <div class="mt-6 text-center space-x-4">
+                    <button onclick="goToPreviousStep()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                        ← الخطوة السابقة
+                    </button>
+                    <button onclick="completeStep(2)" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        ✅ أكمل الخطوة الثانية
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Flutter Frontend Setup -->
+            <div class="step-card rounded-xl p-8 mb-8 hidden" id="step3">
+                <div class="flex items-center mb-6">
+                    <div class="step-number" id="step3Number">3</div>
+                    <div class="mr-4">
+                        <h2 class="text-2xl font-bold text-gray-800">إعداد Flutter Frontend</h2>
+                        <p class="text-gray-600">تثبيت SDK وإنشاء Payment Service</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Add Dependency -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">📦 إضافة Dependency</h3>
+                        <p class="text-gray-600 mb-3">أضف في <code>pubspec.yaml</code>:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('flutterDependency')">نسخ</button>
+                            <pre><code id="flutterDependency">dependencies:
+  bas_pay_flutter:
+    git:
+      url: https://github.com/Osamah-Attiah/bas_pay_flutter.git
+  get: ^4.6.6
+  get_storage: ^2.1.1
+  http: ^1.1.0</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Payment Service -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🔧 إنشاء Payment Service</h3>
+                        <p class="text-gray-600 mb-3">أنشئ ملف <code>lib/app/core/services/bas_payment_service.dart</code>:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('paymentService')">نسخ</button>
+                            <pre><code id="paymentService">import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:bas_pay_flutter/bas_pay_flutter.dart';
+import 'package:bas_pay_flutter/models/init_bas_sdk_model.dart';
+
+class BasPaymentService extends GetxService {
+  String? _currentTrxToken;
+  String? _currentTrxId;
+  String? _currentOrderId;
+
+  /// إنشاء طلب دفع جديد
+  Future&lt;Map&lt;String, dynamic&gt;&gt; initiatePayment({
+    required double amount,
+    required String orderId,
+    required String customerId,
+    required String customerName,
+    required String customerPhone,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${_getBackendUrl()}/api/payment/initiate'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${_getAuthToken()}',
+        },
+        body: jsonEncode({
+          'amount': amount,
+          'order_id': orderId,
+          'customer_id': customerId,
+          'customer_name': customerName,
+          'customer_phone': customerPhone,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          _currentTrxToken = data['data']['trx_token'];
+          _currentTrxId = data['data']['trx_id'];
+          _currentOrderId = orderId;
+          
+          return {
+            'success': true,
+            'trx_token': _currentTrxToken,
+            'trx_id': _currentTrxId,
+            'order_id': orderId,
+          };
+        }
+      }
+      return {'success': false, 'error': 'فشل في إنشاء طلب الدفع'};
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  /// استدعاء واجهة الدفع BAS
+  Future&lt;Map&lt;String, dynamic&gt;&gt; callBasPaymentSdk({
+    required String trxToken,
+    required String userPhone,
+    required String fullName,
+  }) async {
+    try {
+      final model = InitBasSdkModel.dev(
+        trxToken: trxToken,
+        userIdentifier: userPhone,
+        fullName: fullName,
+        language: 'ar',
+        product: 'YOUR_APP_NAME',
+      );
+
+      final result = await BasPayFlutter().callBasPay(model: model);
+
+      if (result.resultStatus && result.resultModel?.status == true) {
+        return {
+          'success': true,
+          'trx_id': trxToken,
+          'message': 'تم الدفع بنجاح',
+          'is_simulation': false,
+          'bas_result': result.resultModel?.toJson(),
+        };
+      } else {
+        return {
+          'success': false,
+          'error': result.resultModel?.message ?? 'خطأ غير معروف',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  String _getBackendUrl() {
+    return 'http://YOUR_BACKEND_URL:8000'; // غيّر هذا
+  }
+
+  String _getAuthToken() {
+    try {
+      return Get.find&lt;GetStorage&gt;().read('auth_token') ?? '';
+    } catch (e) {
+      return '';
+    }
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Register Service -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">📝 تسجيل Service</h3>
+                        <p class="text-gray-600 mb-3">أضف في <code>lib/main.dart</code>:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('registerService')">نسخ</button>
+                            <pre><code id="registerService">import 'package:mqut_app/app/core/services/bas_payment_service.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: 'Flutter Demo',
+      home: MyHomePage(),
+      initialBinding: InitialBinding(),
+    );
+  }
+}
+
+class InitialBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(GetStorage());
+    Get.put(BasPaymentService());
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Examples Notice -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="mr-3">
+                                <h3 class="text-sm font-medium text-blue-800">💡 ملفات الأمثلة الجاهزة</h3>
+                                <div class="mt-2 text-sm text-blue-700">
+                                    <p>يوجد في مجلد <code>examples/</code> ملفات جاهزة للاستخدام:</p>
+                                    <ul class="list-disc list-inside mt-2 space-y-1">
+                                        <li><code>flutter_service.dart</code> - خدمة الدفع الكاملة</li>
+                                        <li><code>usage_example.dart</code> - مثال شامل على الاستخدام</li>
+                                        <li><code>laravel_controller.php</code> - Controller للباك اند</li>
+                                        <li><code>migration.php</code> - جدول قاعدة البيانات</li>
+                                        <li><code>payment_model.php</code> - Model المعاملات</li>
+                                    </ul>
+                                    <p class="mt-2 font-medium">يمكنك نسخ هذه الملفات واستخدامها مباشرة في مشروعك!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center space-x-4">
+                    <button onclick="goToPreviousStep()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                        ← الخطوة السابقة
+                    </button>
+                    <button onclick="completeStep(3)" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        ✅ أكمل الخطوة الثالثة
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Integration & Testing -->
+            <div class="step-card rounded-xl p-8 mb-8 hidden" id="step4">
+                <div class="flex items-center mb-6">
+                    <div class="step-number" id="step4Number">4</div>
+                    <div class="mr-4">
+                        <h2 class="text-2xl font-bold text-gray-800">التكامل والاختبار</h2>
+                        <p class="text-gray-600">ربط Frontend مع Backend واختبار العملية</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Payment Flow -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🔄 تدفق عملية الدفع</h3>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                                <li>المستخدم يضغط على زر "الدفع" في Flutter</li>
+                                <li>Flutter يرسل طلب لـ Laravel Backend</li>
+                                <li>Laravel ينشئ معاملة مع BAS ويحصل على trxToken</li>
+                                <li>Laravel يرسل trxToken لـ Flutter</li>
+                                <li>Flutter يستدعي BAS SDK مع trxToken</li>
+                                <li>BAS SDK يعرض واجهة الدفع للمستخدم</li>
+                                <li>المستخدم يكمل عملية الدفع</li>
+                                <li>BAS SDK يرسل النتيجة لـ Flutter</li>
+                                <li>Flutter يرسل النتيجة لـ Laravel للتأكيد</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Example Usage -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">💡 مثال على الاستخدام</h3>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('exampleUsage')">نسخ</button>
+                            <pre><code id="exampleUsage">// في Flutter Controller
+class PaymentController extends GetxController {
+  final BasPaymentService _paymentService = Get.find();
+
+  Future&lt;void&gt; processPayment() async {
+    try {
+      // الخطوة 1: إنشاء طلب الدفع
+      final initiateResult = await _paymentService.initiatePayment(
+        amount: 50000.0,
+        orderId: 'order_${DateTime.now().millisecondsSinceEpoch}',
+        customerId: 'user_123',
+        customerName: 'أحمد محمد',
+        customerPhone: '777777777',
+      );
+
+      if (initiateResult['success']) {
+        // الخطوة 2: استدعاء واجهة الدفع
+        final paymentResult = await _paymentService.callBasPaymentSdk(
+          trxToken: initiateResult['trx_token'],
+          userPhone: '777777777',
+          fullName: 'أحمد محمد',
+        );
+
+        if (paymentResult['success']) {
+          Get.snackbar('نجح', 'تم الدفع بنجاح!');
+        } else {
+          Get.snackbar('فشل', paymentResult['error']);
+        }
+      }
+    } catch (e) {
+      Get.snackbar('خطأ', e.toString());
+    }
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Testing Checklist -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">✅ قائمة اختبار شاملة</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-gray-700 mb-2">Backend Tests</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">إنشاء معاملة جديدة</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">التحقق من حالة المعاملة</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">تأكيد الدفع</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-700 mb-2">Frontend Tests</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">عرض واجهة الدفع</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">معالجة النجاح</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">معالجة الفشل</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Examples Notice -->
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="mr-3">
+                                <h3 class="text-sm font-medium text-yellow-800">🔧 ملفات التكامل الجاهزة</h3>
+                                <div class="mt-2 text-sm text-yellow-700">
+                                    <p>يوجد في مجلد <code>examples/</code> ملفات التكامل الكاملة:</p>
+                                    <ul class="list-disc list-inside mt-2 space-y-1">
+                                        <li><code>usage_example.dart</code> - مثال شامل على الاستخدام</li>
+                                        <li><code>flutter_service.dart</code> - خدمة الدفع الكاملة</li>
+                                        <li><code>laravel_controller.php</code> - Controller للباك اند</li>
+                                    </ul>
+                                    <p class="mt-2 font-medium">هذه الملفات تحتوي على كود جاهز للاستخدام مع معالجة الأخطاء!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center space-x-4">
+                    <button onclick="goToPreviousStep()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                        ← الخطوة السابقة
+                    </button>
+                    <button onclick="completeStep(4)" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        ✅ أكمل الخطوة الرابعة
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Deployment & Production -->
+            <div class="step-card rounded-xl p-8 mb-8 hidden" id="step5">
+                <div class="flex items-center mb-6">
+                    <div class="step-number" id="step5Number">5</div>
+                    <div class="mr-4">
+                        <h2 class="text-2xl font-bold text-gray-800">النشر والإنتاج</h2>
+                        <p class="text-gray-600">إعداد البيئة الإنتاجية والأمان</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Environment Variables -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🔐 متغيرات البيئة الإنتاجية</h3>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('envProduction')">نسخ</button>
+                            <pre><code id="envProduction"># .env.production
+BAS_BASE_URL=https://api.basgate.com
+BAS_CLIENT_ID=your_production_client_id
+BAS_CLIENT_SECRET=your_production_client_secret
+BAS_APP_ID=your_production_app_id
+BAS_MERCHANT_KEY=your_production_merchant_key
+BAS_VERIFY_SSL=true
+BAS_TIMEOUT=30</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Security Checklist -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🛡️ قائمة الأمان</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-gray-700 mb-2">Laravel Security</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">تفعيل HTTPS</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">تشفير البيانات الحساسة</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">تسجيل العمليات</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">التحقق من الصلاحيات</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-700 mb-2">Flutter Security</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">تشفير التخزين المحلي</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">التحقق من صحة البيانات</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">معالجة الأخطاء</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" class="mr-2">
+                                        <span class="text-sm">اختبار على أجهزة حقيقية</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monitoring -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 المراقبة والتتبع</h3>
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">نصائح للمراقبة:</h4>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>تسجيل جميع عمليات الدفع (نجاح/فشل)</li>
+                                <li>مراقبة أوقات الاستجابة</li>
+                                <li>تتبع معدلات النجاح</li>
+                                <li>إعداد تنبيهات للأخطاء</li>
+                                <li>مراجعة دورية للسجلات</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center space-x-4">
+                    <button onclick="goToPreviousStep()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                        ← الخطوة السابقة
+                    </button>
+                    <button onclick="completeStep(5)" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors">
+                        🎉 أكمل الدليل
+                    </button>
+                </div>
+            </div>
+
+            <!-- Completion -->
+            <div class="step-card rounded-xl p-8 mb-8 hidden text-center" id="completion">
+                <div class="mb-6">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">تهانينا!</h2>
+                    <p class="text-gray-600">لقد أكملت ربط بوابة الدفع BAS بنجاح</p>
+                </div>
+                
+                <div class="bg-green-50 p-6 rounded-lg mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">ما تم إنجازه:</h3>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700 text-right">
+                        <li>إعداد Laravel Backend مع BAS SDK</li>
+                        <li>إعداد Flutter Frontend مع BAS SDK</li>
+                        <li>ربط Frontend مع Backend</li>
+                        <li>اختبار عملية الدفع الكاملة</li>
+                        <li>إعداد البيئة الإنتاجية</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-800">📚 موارد إضافية:</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <a href="https://github.com/Osamah-Attiah/bas_pay_flutter" target="_blank" 
+                           class="bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition-colors">
+                            <h4 class="font-semibold">Flutter SDK</h4>
+                            <p class="text-sm text-gray-600">مستودع GitHub</p>
+                        </a>
+                        <a href="https://basgate.com" target="_blank" 
+                           class="bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition-colors">
+                            <h4 class="font-semibold">BAS Gateway</h4>
+                            <p class="text-sm text-gray-600">الموقع الرسمي</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Examples Notice -->
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mt-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-purple-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="mr-3">
+                            <h3 class="text-sm font-medium text-purple-800">🎯 ملفات الأمثلة الكاملة</h3>
+                            <div class="mt-2 text-sm text-purple-700">
+                                <p>جميع ملفات الأمثلة متوفرة في مجلد <code>examples/</code>:</p>
+                                <div class="grid md:grid-cols-2 gap-2 mt-2">
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><code>flutter_service.dart</code></li>
+                                        <li><code>usage_example.dart</code></li>
+                                        <li><code>laravel_controller.php</code></li>
+                                    </ul>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><code>migration.php</code></li>
+                                        <li><code>payment_model.php</code></li>
+                                        <li><code>laravel_routes.php</code></li>
+                                    </ul>
+                                </div>
+                                <p class="mt-2 font-medium">انسخ هذه الملفات واستخدمها مباشرة في مشروعك!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button onclick="resetGuide()" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                        🔄 إعادة تشغيل الدليل
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        const flowchartData = {
-            labels: [
-                '1. التطبيق يطلب الدفع من الباك اند',
-                '2. الباك اند ينشئ المعاملة مع BAS',
-                '3. الباك اند يرسل trxToken للتطبيق',
-                '4. التطبيق يستدعي BAS SDK',
-                '5. المستخدم يكمل عملية الدفع',
-                '6. التطبيق يبلغ الباك اند بالنجاح',
-                '7. الباك اند يتحقق من الحالة مع BAS'
-            ],
-            datasets: [
-                {
-                    label: 'جهة التطبيق (Frontend)',
-                    data: [1, 0, 0, 1, 0, 1, 0],
-                    backgroundColor: '#A4907C',
-                    borderColor: '#8D7B68',
-                    borderWidth: 1,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.7
-                },
-                {
-                    label: 'جهة الباك اند (Backend)',
-                    data: [0, 1, 1, 0, 0, 0, 1],
-                    backgroundColor: '#C8B6A6',
-                    borderColor: '#A4907C',
-                    borderWidth: 1,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.7
-                },
-                {
-                    label: 'المستخدم',
-                    data: [0, 0, 0, 0, 1, 0, 0],
-                    backgroundColor: '#EFEBE5',
-                    borderColor: '#DCD6CC',
-                    borderWidth: 1,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.7
-                }
-            ]
-        };
-
-        const flowchartConfig = {
-            type: 'bar',
-            data: flowchartData,
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { display: false, stacked: true },
-                    y: {
-                        stacked: true,
-                        ticks: { font: { family: "'Tajawal', sans-serif", size: 14 } }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { font: { family: "'Tajawal', sans-serif", size: 14 } }
-                    },
-                    tooltip: { enabled: false }
-                },
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const index = elements[0].index;
-                        let targetId = index <= 2 ? 'backend' : (index <= 4 ? 'frontend' : 'confirmation');
-                        
-                        document.getElementById('steps').scrollIntoView({ behavior: 'smooth' });
-                        
-                        document.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
-                        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-
-                        const targetTab = document.querySelector(`button[data-tab="${targetId}"]`);
-                        const targetContent = document.getElementById(targetId);
-                        if(targetTab && targetContent) {
-                            targetTab.classList.add('active');
-                            targetContent.classList.remove('hidden');
-                        }
-                    }
-                }
-            }
-        };
-        
-        function setupAccordions() {
-            document.querySelectorAll('.accordion-header').forEach(header => {
-                header.addEventListener('click', () => {
-                    const content = header.nextElementSibling;
-                    const icon = header.querySelector('span');
-                    
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                        icon.style.transform = 'rotate(0deg)';
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                        icon.style.transform = 'rotate(45deg)';
-                    }
-                });
-            });
-        }
-
-        window.onload = function() {
-            const ctx = document.getElementById('integrationFlowchart').getContext('2d');
-            const integrationFlowchart = new Chart(ctx, flowchartConfig);
-
-            document.querySelectorAll('.tab-button').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const target = tab.dataset.tab;
-                    document.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.toggle('hidden', content.id !== target);
-                    });
-                });
-            });
-            
-            setupAccordions();
-        };
-    </script>
+    <script src="assets/script.js"></script>
 </body>
 </html>
-

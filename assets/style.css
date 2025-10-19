@@ -1,0 +1,585 @@
+/* BAS Payment Integration Guide - Custom Styles */
+
+/* Base Styles */
+body {
+    font-family: 'Tajawal', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Step Cards */
+.step-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    color: #1f2937;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Step Numbers */
+.step-number {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.step-completed {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    transform: scale(1.1);
+}
+
+.step-active {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    }
+    50% { 
+        transform: scale(1.05); 
+        box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+    }
+}
+
+/* Code Blocks */
+.code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    direction: ltr;
+    text-align: left;
+    position: relative;
+    border: 1px solid #334155;
+    margin: 1rem 0;
+}
+
+.code-block pre {
+    margin: 0;
+    color: #e2e8f0;
+}
+
+.code-block code {
+    color: #e2e8f0;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.code-block pre {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #374151;
+    color: white;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+/* API Tester */
+.api-tester {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+    color: #1f2937;
+}
+
+.api-tester:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.api-tester h3 {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.api-tester label {
+    color: #374151;
+    font-weight: 500;
+}
+
+.response-area {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 4px;
+    padding: 1rem;
+    min-height: 100px;
+    font-family: 'Courier New', monospace;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    border: 1px solid #334155;
+    transition: all 0.3s ease;
+}
+
+.success-response {
+    border-left: 4px solid #22c55e;
+    background: #064e3b;
+}
+
+.error-response {
+    border-left: 4px solid #ef4444;
+    background: #7f1d1d;
+}
+
+/* Progress Bar */
+.progress-bar {
+    background: #e5e7eb;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    height: 100%;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Animations */
+.hidden {
+    display: none;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Buttons */
+button {
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Navigation Buttons */
+.space-x-4 > * + * {
+    margin-left: 1rem;
+}
+
+/* Previous Button */
+button[onclick*="goToPreviousStep"] {
+    background-color: #6b7280;
+    border: 1px solid #6b7280;
+}
+
+button[onclick*="goToPreviousStep"]:hover {
+    background-color: #4b5563;
+    border-color: #4b5563;
+}
+
+/* Form Elements */
+input, textarea {
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background-color: #ffffff;
+}
+
+input[readonly] {
+    background-color: #f9fafb;
+    color: #374151;
+    border-color: #e5e7eb;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #667eea;
+}
+
+/* Lists */
+.step-card ul,
+.step-card ol {
+    color: #374151;
+}
+
+.step-card li {
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.step-card ul li::marker {
+    color: #667eea;
+}
+
+.step-card ol li::marker {
+    color: #667eea;
+}
+
+/* Notice Boxes */
+.bg-blue-50, .bg-green-50, .bg-yellow-50, .bg-purple-50 {
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.bg-blue-50 h3, .bg-green-50 h3, .bg-yellow-50 h3, .bg-purple-50 h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.bg-blue-50 p, .bg-green-50 p, .bg-yellow-50 p, .bg-purple-50 p {
+    margin-bottom: 0.5rem;
+}
+
+.bg-blue-50 ul, .bg-green-50 ul, .bg-yellow-50 ul, .bg-purple-50 ul {
+    margin-top: 0.5rem;
+}
+
+.bg-blue-50 li, .bg-green-50 li, .bg-yellow-50 li, .bg-purple-50 li {
+    margin-bottom: 0.25rem;
+}
+
+.bg-blue-50 code, .bg-green-50 code, .bg-yellow-50 code, .bg-purple-50 code {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1f2937;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .step-card {
+        margin: 0 1rem;
+        padding: 1.5rem;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .code-block {
+        font-size: 0.8rem;
+        padding: 0.75rem;
+    }
+    
+    .api-tester {
+        padding: 0.75rem;
+    }
+}
+
+/* Text Colors */
+.step-card h1,
+.step-card h2,
+.step-card h3,
+.step-card h4,
+.step-card h5,
+.step-card h6 {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.step-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.step-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.step-card h4 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.step-card p,
+.step-card span,
+.step-card div {
+    color: #374151;
+}
+
+.step-card label {
+    color: #374151;
+}
+
+/* Completion Screen */
+#completion {
+    background: rgba(255, 255, 255, 0.95);
+    color: #1f2937;
+}
+
+#completion h1,
+#completion h2,
+#completion h3,
+#completion h4,
+#completion h5,
+#completion h6 {
+    color: #1f2937;
+}
+
+#completion p,
+#completion span,
+#completion div {
+    color: #374151;
+}
+
+#completion ul,
+#completion ol {
+    color: #374151;
+}
+
+#completion li {
+    color: #374151;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .step-card {
+        background: rgba(30, 41, 59, 0.95);
+        color: #e2e8f0;
+    }
+    
+    #completion {
+        background: rgba(30, 41, 59, 0.95);
+        color: #e2e8f0;
+    }
+    
+    #completion h1,
+    #completion h2,
+    #completion h3,
+    #completion h4,
+    #completion h5,
+    #completion h6 {
+        color: #e2e8f0;
+    }
+    
+    #completion p,
+    #completion span,
+    #completion div {
+        color: #cbd5e1;
+    }
+    
+    #completion ul,
+    #completion ol {
+        color: #cbd5e1;
+    }
+    
+    #completion li {
+        color: #cbd5e1;
+    }
+    
+    .step-card h1,
+    .step-card h2,
+    .step-card h3,
+    .step-card h4,
+    .step-card h5,
+    .step-card h6 {
+        color: #e2e8f0;
+        font-weight: 600;
+    }
+    
+    .step-card p,
+    .step-card span,
+    .step-card div {
+        color: #cbd5e1;
+    }
+    
+    .step-card ul,
+    .step-card ol {
+        color: #cbd5e1;
+    }
+    
+    .step-card li {
+        color: #cbd5e1;
+    }
+    
+    .step-card label {
+        color: #cbd5e1;
+    }
+    
+    .api-tester {
+        background: #1e293b;
+        border-color: #334155;
+        color: #e2e8f0;
+    }
+    
+    .api-tester h3 {
+        color: #e2e8f0;
+    }
+    
+    .api-tester label {
+        color: #cbd5e1;
+    }
+    
+    /* Notice Boxes in Dark Mode */
+    .bg-blue-50 {
+        background-color: #1e3a8a;
+        border-color: #3b82f6;
+    }
+    
+    .bg-green-50 {
+        background-color: #14532d;
+        border-color: #22c55e;
+    }
+    
+    .bg-yellow-50 {
+        background-color: #713f12;
+        border-color: #eab308;
+    }
+    
+    .bg-purple-50 {
+        background-color: #581c87;
+        border-color: #a855f7;
+    }
+    
+    .bg-blue-50 h3, .bg-green-50 h3, .bg-yellow-50 h3, .bg-purple-50 h3 {
+        color: #e2e8f0;
+    }
+    
+    .bg-blue-50 p, .bg-green-50 p, .bg-yellow-50 p, .bg-purple-50 p {
+        color: #cbd5e1;
+    }
+    
+    .bg-blue-50 ul, .bg-green-50 ul, .bg-yellow-50 ul, .bg-purple-50 ul {
+        color: #cbd5e1;
+    }
+    
+    .bg-blue-50 li, .bg-green-50 li, .bg-yellow-50 li, .bg-purple-50 li {
+        color: #cbd5e1;
+    }
+    
+    .bg-blue-50 code, .bg-green-50 code, .bg-yellow-50 code, .bg-purple-50 code {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: #e2e8f0;
+        padding: 0.125rem 0.25rem;
+        border-radius: 0.25rem;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.875rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .step-card {
+        background: white;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .copy-btn {
+        display: none;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus Styles for Accessibility */
+button:focus,
+input:focus,
+textarea:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .step-card {
+        border: 2px solid #000;
+    }
+    
+    .step-number {
+        border: 2px solid #000;
+    }
+}
