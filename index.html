@@ -67,26 +67,42 @@
                     
                     <div class="space-y-4">
                         <h3 class="text-lg font-semibold text-gray-800">🔑 بيانات BAS</h3>
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="mr-3">
+                                    <h4 class="text-sm font-medium text-yellow-800">⚠️ مهم جداً</h4>
+                                    <p class="text-sm text-yellow-700 mt-1">
+                                        هذه البيانات الحساسة يجب أن تكون <strong>في الباك اند فقط</strong> وليس في Flutter. 
+                                        Flutter يحصل فقط على <code>trxToken</code> من الباك اند.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="space-y-3">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">App ID</label>
                                 <input type="text" class="w-full p-2 border rounded" id="appId" 
-                                       value="5d451b00-4f9d-4b52-8cc6-913793cca777" readonly>
+                                       value="YOUR_APP_ID" readonly>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Merchant Key</label>
                                 <input type="text" class="w-full p-2 border rounded" id="merchantKey" 
-                                       value="I2lGQGFFNWQ3MHpkMTdfg==" readonly>
+                                       value="YOUR_MERCHANT_KEY" readonly>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Client ID</label>
                                 <input type="text" class="w-full p-2 border rounded" id="clientId" 
-                                       value="e4051feb-cfce-4af5-a863-4027bdf7eeb5" readonly>
+                                       value="YOUR_CLIENT_ID" readonly>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Client Secret</label>
                                 <input type="text" class="w-full p-2 border rounded" id="clientSecret" 
-                                       value="15c9a6b0-a3b9-4513-b925-6084f52e2138" readonly>
+                                       value="YOUR_CLIENT_SECRET" readonly>
                             </div>
                         </div>
                     </div>
@@ -129,10 +145,10 @@
 
 return [
     'base_url' => env('BAS_BASE_URL', 'https://api-tst.basgate.com'),
-    'client_id' => env('BAS_CLIENT_ID', 'e4051feb-cfce-4af5-a863-4027bdf7eeb5'),
-    'client_secret' => env('BAS_CLIENT_SECRET', '15c9a6b0-a3b9-4513-b925-6084f52e2138'),
-    'app_id' => env('BAS_APP_ID', '5d451b00-4f9d-4b52-8cc6-913793cca777'),
-    'merchant_key' => env('BAS_MERCHANT_KEY', 'I2lGQGFFNWQ3MHpkMTdfg=='),
+    'client_id' => env('BAS_CLIENT_ID', 'your_client_id'),
+    'client_secret' => env('BAS_CLIENT_SECRET', 'your_client_secret'),
+    'app_id' => env('BAS_APP_ID', 'your_app_id'),
+    'merchant_key' => env('BAS_MERCHANT_KEY', 'your_merchant_key'),
     'iv' => env('BAS_IV', '@@@@&&&&####$$$$'),
     'callback_uri' => env('BAS_CALLBACK_URI', 'http://localhost:8000/callback'),
     
@@ -250,6 +266,22 @@ return [
                     <!-- Payment Service -->
                     <div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-3">🔧 إنشاء Payment Service</h3>
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="mr-3">
+                                    <h4 class="text-sm font-medium text-green-800">✅ الأمان</h4>
+                                    <p class="text-sm text-green-700 mt-1">
+                                        لاحظ أن Flutter <strong>لا يحتوي على بيانات BAS الحساسة</strong>. 
+                                        يحصل فقط على <code>trxToken</code> من الباك اند.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                         <p class="text-gray-600 mb-3">أنشئ ملف <code>lib/app/core/services/bas_payment_service.dart</code>:</p>
                         <div class="code-block">
                             <button class="copy-btn" onclick="copyCode('paymentService')">نسخ</button>
@@ -323,7 +355,6 @@ class BasPaymentService extends GetxService {
         userIdentifier: userPhone,
         fullName: fullName,
         language: 'ar',
-        product: 'YOUR_APP_NAME',
       );
 
       final result = await BasPayFlutter().callBasPay(model: model);

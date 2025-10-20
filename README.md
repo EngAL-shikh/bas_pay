@@ -118,14 +118,16 @@ BAS_PAYMENT_INTEGRATION_GUIDE/
 **⏱️ الوقت المتوقع للتنفيذ**: 30-60 دقيقة
 **🎯 معدل النجاح**: 95%+ مع اتباع الدليل
 
-## 🔑 بيانات BAS الجديدة
+## 🔑 بيانات BAS (تُحفظ في الباك اند فقط)
 
 ```
-App ID: 5d451b00-4f9d-4b52-8cc6-913793cca777
-Merchant Key: I2lGQGFFNWQ3MHpkMTdfg==
-Client ID: e4051feb-cfce-4af5-a863-4027bdf7eeb5
-Client Secret: 15c9a6b0-a3b9-4513-b925-6084f52e2138
+App ID: your_app_id
+Merchant Key: your_merchant_key
+Client ID: your_client_id
+Client Secret: your_client_secret
 ```
+
+⚠️ **مهم جداً**: هذه البيانات الحساسة يجب أن تكون في الباك اند فقط وليس في Flutter. Flutter يحصل فقط على `trxToken` من الباك اند.
 
 ---
 
